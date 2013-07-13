@@ -39,13 +39,20 @@ def index(request):
         else:
             form = AddPurchaseForm()
 
-        purchases = Purchase.objects.filter(user=request.user)
+        purchases = Purchase.purchases_this_month(request.user)
+        tags = Tag.tags_for_purchases(purchases)
+        for tag in tags:
+            setattr(tag, "total", tag.total_across_purchases(purchases))
+
+        tags = sorted(tags, key=lambda tag: tag.total, reverse=True)
 
         return render_to_response("index.html", {
             'title': "Purchases",
             "user": request.user,
             "purchases": purchases,
             "form": form,
+            "total": Purchase.total(purchases),
+            "tags": tags
         },
             context_instance=RequestContext(request)
         )
