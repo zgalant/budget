@@ -8,17 +8,46 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.models import User
+from purchases.models import Purchase
 
 from purchases.forms import RegistrationForm
+from purchases.forms import AddPurchaseForm
 
 
 def index(request):
-    return render_to_response("index.html", {
-        'title': "Purchases",
-        "user": request.user
-    },
-        context_instance=RequestContext(request)
-    )
+    if request.user.is_authenticated():
+        if request.method == "POST":
+            form = AddPurchaseForm(request.POST)
+            if form.is_valid():
+                description = form.cleaned_data['description']
+                price = form.cleaned_data['price']
+                purchase = Purchase(
+                    description=description,
+                    price=price,
+                    user=request.user
+                )
+                purchase.save()
+                return redirect("/")
+        else:
+            form = AddPurchaseForm()
+
+        purchases = Purchase.objects.filter(user=request.user)
+
+        return render_to_response("index.html", {
+            'title': "Purchases",
+            "user": request.user,
+            "purchases": purchases,
+            "form": form,
+        },
+            context_instance=RequestContext(request)
+        )
+    else:
+        return render_to_response("index.html", {
+            'title': "Purchases",
+            "user": request.user,
+        },
+            context_instance=RequestContext(request)
+        )
 
 
 def create_basic_user(form, request):

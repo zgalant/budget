@@ -44,3 +44,8 @@ class RegistrationForm(forms.Form):
         if password != '' and match != password:
             raise forms.ValidationError("Passwords did not match!")
         return match
+
+
+class AddPurchaseForm(forms.Form):
+    description = forms.CharField()
+    price = forms.DecimalField(decimal_places=2)

@@ -21,4 +21,6 @@ urlpatterns = patterns(
     (r'^login/?$', "purchases.views.login"),
     (r'^logout/?$', "purchases.views.logout"),
     (r'^register/?$', "purchases.views.register"),
+
+    (r'^add_purchase/?$', "purchases.views.index"),
 )
