@@ -156,7 +156,7 @@ def authenticate(request, email, password):
             del request.session['next']
             return redirect(next)
 
-        return redirect('/')  # go to karel section
+        return redirect('/')
 
     else:
         return redirect('/login?msg=bad_pword&start_email=%s' % email)
