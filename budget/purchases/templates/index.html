@@ -1,5 +1,3 @@
-<h1>Index</h1>
-
 {% if user.is_authenticated %}
 	<div>Welcome, {{user.first_name}}</div>
 	<a href="/logout">logout</a>
@@ -11,7 +9,14 @@
 	</form>
 
 	{% for purchase in purchases %}
-		<div>${{purchase.price}}: {{purchase.description}}</div>
+		<div>
+			{{purchase.timestamp}} - ${{purchase.price}}: {{purchase.description}}
+			<div>
+				{% for tag in purchase.tags.all %}
+					{{tag.name}}{% if forloop.last %}{% else %},{% endif %}
+				{% endfor %}
+			</div>
+		</div>
 	{% endfor %}
 
 {% else %}

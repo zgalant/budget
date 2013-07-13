@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.models import User
 from purchases.models import Purchase
+from purchases.models import Tag
 
 from purchases.forms import RegistrationForm
 from purchases.forms import AddPurchaseForm
@@ -21,12 +22,19 @@ def index(request):
             if form.is_valid():
                 description = form.cleaned_data['description']
                 price = form.cleaned_data['price']
+                tagstring = form.cleaned_data['tags']
+                tags = tagstring.split(",")
                 purchase = Purchase(
                     description=description,
                     price=price,
                     user=request.user
                 )
                 purchase.save()
+                for tag in tags:
+                    tag = tag.strip()
+                    t, created = Tag.objects.get_or_create(name=tag)
+                    t.save()
+                    purchase.tags.add(t)
                 return redirect("/")
         else:
             form = AddPurchaseForm()

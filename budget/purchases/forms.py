@@ -49,3 +49,4 @@ class RegistrationForm(forms.Form):
 class AddPurchaseForm(forms.Form):
     description = forms.CharField()
     price = forms.DecimalField(decimal_places=2)
+    tags = forms.CharField(required=False)
