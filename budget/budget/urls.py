@@ -23,4 +23,6 @@ urlpatterns = patterns(
     (r'^register/?$', "purchases.views.register"),
 
     (r'^add_purchase/?$', "purchases.views.index"),
+
+    url(r'^purchases/', include('purchases.urls')),
 )

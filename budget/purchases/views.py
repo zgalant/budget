@@ -65,6 +65,49 @@ def index(request):
         )
 
 
+def add(request):
+    if request.method == "POST":
+        form = AddPurchaseForm(request.POST)
+        if form.is_valid():
+            description = form.cleaned_data['description']
+            price = form.cleaned_data['price']
+            tagstring = form.cleaned_data['tags']
+            tags = tagstring.split(",")
+            purchase = Purchase(
+                description=description,
+                price=price,
+                user=request.user
+            )
+            purchase.save()
+            for tag in tags:
+                tag = tag.strip()
+                t, created = Tag.objects.get_or_create(name=tag)
+                t.save()
+                purchase.tags.add(t)
+    return redirect("/purchases")
+
+
+def purchases(request):
+    form = AddPurchaseForm()
+    purchases = Purchase.purchases_this_month(request.user)
+    tags = Tag.tags_for_purchases(purchases)
+    for tag in tags:
+        setattr(tag, "total", tag.total_across_purchases(purchases))
+
+    tags = sorted(tags, key=lambda tag: tag.total, reverse=True)
+
+    return render_to_response("purchases.html", {
+        'title': "Purchases",
+        "user": request.user,
+        "purchases": purchases,
+        "form": form,
+        "total": Purchase.total(purchases),
+        "tags": tags
+    },
+        context_instance=RequestContext(request)
+    )
+
+
 def create_basic_user(form, request):
     ## Get the form data
     email = form.cleaned_data['email']

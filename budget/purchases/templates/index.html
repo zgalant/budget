@@ -2,32 +2,9 @@
 	<div>Welcome, {{user.first_name}}</div>
 	<a href="/logout">logout</a>
 
-	<form action="/add_purchase" method="post">
-		{% csrf_token %}
-		{{ form.as_p }}
-		<input type="submit" value="Submit" />
-	</form>
+	<br/>
 
-	<h3>This month</h3>
-	<div><b>Total:</b> ${{total}}</div>
-	<br/>
-	<div>
-		{% for tag in tags %}
-			{{tag.name}}: ${{tag.total}}<br/>
-		{% endfor %}
-	</div>
-	<br/>
-	<h3>All Purchases</h3>
-	{% for purchase in purchases %}
-		<div>
-			{{purchase.timestamp}} - ${{purchase.price}}: {{purchase.description}}
-			<div>
-				{% for tag in purchase.tags.all %}
-					{{tag.name}}{% if forloop.last %}{% else %}, {% endif %}
-				{% endfor %}
-			</div>
-		</div>
-	{% endfor %}
+	<a href="/purchases">View purchases</a>
 
 {% else %}
 	<a href="/login">Login</a> or <a href="/register">Register</a>
