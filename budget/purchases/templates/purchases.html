@@ -5,6 +5,13 @@
 </form>
 
 <h3>This month</h3>
+<div>
+	<b>Filters: </b>
+	{% for tag in filters %}
+		{{tag.name}}{% if forloop.last %}{% else %}, {% endif %}
+	{% endfor %}
+</div>
+<br/>
 <div><b>Total:</b> ${{total}}</div>
 <br/>
 <div>

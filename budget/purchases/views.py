@@ -88,8 +88,19 @@ def add(request):
 
 
 def purchases(request):
+    try:
+        tag_filters = request.GET['tags']
+        tag_filters = tag_filters.split(",")
+        tag_filters = Tag.objects.filter(name__in=tag_filters)
+    except Exception:
+        tag_filters = []
+
     form = AddPurchaseForm()
+
     purchases = Purchase.purchases_this_month(request.user)
+    for tag_filter in tag_filters:
+        purchases = purchases.filter(tags__in=[tag_filter])
+
     tags = Tag.tags_for_purchases(purchases)
     for tag in tags:
         setattr(tag, "total", tag.total_across_purchases(purchases))
@@ -102,7 +113,8 @@ def purchases(request):
         "purchases": purchases,
         "form": form,
         "total": Purchase.total(purchases),
-        "tags": tags
+        "tags": tags,
+        "filters": tag_filters,
     },
         context_instance=RequestContext(request)
     )
