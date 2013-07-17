@@ -1,10 +1,11 @@
+<h2>Add new purchase</h2>
 <form action="/purchases/add" method="post">
 	{% csrf_token %}
 	{{ form.as_p }}
 	<input type="submit" value="Submit" />
 </form>
 
-<h3>This month</h3>
+<h3>This month: {{month}}/{{year}}</h3>
 <div>
 	<b>Filters: </b>
 	{% for tag in filters %}

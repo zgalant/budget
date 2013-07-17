@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+import datetime
 
 from django.contrib.auth.models import User
 from purchases.models import Purchase
@@ -39,20 +40,10 @@ def index(request):
         else:
             form = AddPurchaseForm()
 
-        purchases = Purchase.purchases_this_month(request.user)
-        tags = Tag.tags_for_purchases(purchases)
-        for tag in tags:
-            setattr(tag, "total", tag.total_across_purchases(purchases))
-
-        tags = sorted(tags, key=lambda tag: tag.total, reverse=True)
-
         return render_to_response("index.html", {
             'title': "Purchases",
             "user": request.user,
-            "purchases": purchases,
             "form": form,
-            "total": Purchase.total(purchases),
-            "tags": tags
         },
             context_instance=RequestContext(request)
         )
@@ -95,9 +86,22 @@ def purchases(request):
     except Exception:
         tag_filters = []
 
+    now = datetime.datetime.now()
+    try:
+        month = request.GET['month']
+        month = int(month)
+    except Exception:
+        month = now.month
+    try:
+        year = request.GET['year']
+        year = int(year)
+    except Exception:
+        year = now.year
+
     form = AddPurchaseForm()
 
-    purchases = Purchase.purchases_this_month(request.user)
+    purchases = Purchase.purchases(request.user, month=month, year=year)
+
     for tag_filter in tag_filters:
         purchases = purchases.filter(tags__in=[tag_filter])
 
@@ -115,6 +119,8 @@ def purchases(request):
         "total": Purchase.total(purchases),
         "tags": tags,
         "filters": tag_filters,
+        "month": month,
+        "year": year,
     },
         context_instance=RequestContext(request)
     )

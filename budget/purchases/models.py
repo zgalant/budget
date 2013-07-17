@@ -29,16 +29,32 @@ class Purchase(models.Model):
     tags = models.ManyToManyField(Tag, related_name='purchases')
 
     @staticmethod
-    def purchases_this_month(user):
+    def purchases(user, month=None, year=None):
+        """Return purchases for the given timeframe.
+
+        Returns one month's worth of purchases given the start date.
+
+        """
         now = datetime.datetime.now()
+        month = month if month is not None else now.month
+        year = year if year is not None else now.year
+        next_month = month + 1 if month != 12 else 1
+        next_year = year if month != 12 else year + 1
+
         month_start = datetime.datetime(
-            year=now.year,
-            month=now.month,
+            year=year,
+            month=month,
+            day=1
+        )
+        month_end = datetime.datetime(
+            year=next_year,
+            month=next_month,
             day=1
         )
         purchases = Purchase.objects.filter(
             user=user,
-            timestamp__gte=month_start
+            timestamp__gte=month_start,
+            timestamp__lt=month_end
         )
         return purchases
 
