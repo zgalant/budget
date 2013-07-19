@@ -63,7 +63,7 @@ var TagUI = (function(){
 		tag_list = "#tag-list";
 
 		$(add_tag_box).keydown(function(event){
-			if(event.which == 188){
+			if(event.which == 188 || event.which == 13){
 				var tag = $(this).val();
 				$(this).val("");
 				Tagger.add(tag);
