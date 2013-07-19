@@ -1,0 +1,9 @@
+#tag-list{
+	margin-bottom:5px;
+}
+
+.tag{
+	padding: 3px;
+	margin: 1px;
+	border: 1px solid #eee;
+}
