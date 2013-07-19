@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+
+	<div class="span6">
+		<h3>Tag Family Tree</h3>
+		{% for child, parents in parent_tags.items %}
+			<div>
+				{{child}} - 
+				{% for parent in parents %}
+				{{parent}}, 
+				{% endfor %}
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="span6">
+		<h2>Add new parent tag</h2>
+		<form action="/parents" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<input type="submit" value="Submit" />
+		</form>
+	</div>
+
+</div>
+
+{% endblock %}

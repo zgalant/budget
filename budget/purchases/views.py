@@ -16,8 +16,7 @@ from purchases.models import Tag
 
 from purchases.forms import RegistrationForm
 from purchases.forms import AddPurchaseForm
-
-import json
+from purchases.forms import AddParentTagForm
 
 
 def index(request):
@@ -125,6 +124,31 @@ def purchases(request):
         "filters": tag_filters,
         "month": month,
         "year": year,
+    },
+        context_instance=RequestContext(request)
+    )
+
+
+def parents(request):
+    profile = UserProfile.objects.get(user=request.user)
+
+    if request.method == "POST":
+        form = AddParentTagForm(request.POST)
+        if form.is_valid():
+            tag = form.cleaned_data['tag']
+            parent = form.cleaned_data['parent']
+            profile.add_parent_tag(tag, parent)
+            return redirect("/parents")
+    else:
+        form = AddParentTagForm()
+
+    parent_tags = profile.get_parent_tags()
+
+    return render_to_response("parents.html", {
+        'title': "Tag Family Tree",
+        "user": request.user,
+        "form": form,
+        "parent_tags": parent_tags,
     },
         context_instance=RequestContext(request)
     )

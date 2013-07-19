@@ -60,3 +60,25 @@ class AddPurchaseForm(forms.Form):
             attrs={'placeholder': "Hit Enter or , to save a tag"}
         )
     )
+
+
+class AddParentTagForm(forms.Form):
+    tag = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'placeholder': "Child Tag"}
+        )
+    )
+    parent = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'placeholder': "Parent Tag"}
+        )
+    )
+
+    def clean_parent(self):
+        tag = self.cleaned_data['tag']
+        parent = self.cleaned_data['parent']
+
+        if tag == parent:
+            raise forms.ValidationError("Tag Can't Have a Parent Be Itself!")
+
+        return parent

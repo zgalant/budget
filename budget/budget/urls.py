@@ -22,5 +22,7 @@ urlpatterns = patterns(
     (r'^logout/?$', "purchases.views.logout"),
     (r'^register/?$', "purchases.views.register"),
 
+    (r'^parents/?$', "purchases.views.parents"),
+
     url(r'^purchases/', include('purchases.urls')),
 )

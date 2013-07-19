@@ -4,12 +4,27 @@ from django.db import models
 from django.contrib.auth.models import User
 
 import datetime
+import json
 from jsonfield import JSONField
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     parent_tags = JSONField()
+
+    def get_parent_tags(self):
+        parents = json.loads(self.parent_tags)
+        return parents
+
+    def add_parent_tag(self, tag, parent):
+        # TODO: make sure we don't create a loop
+        parents = self.get_parent_tags()
+        if tag in parents:
+            parents[tag].append(parent)
+        else:
+            parents[tag] = [parent]
+        self.parent_tags = json.dumps(parents)
+        self.save()
 
 
 class Tag(models.Model):
