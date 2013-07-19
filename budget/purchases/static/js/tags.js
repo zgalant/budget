@@ -36,9 +36,15 @@ var Tagger = (function(){
 		}
 	}
 
+	var removeTag = function(tag){
+		var index = tags.indexOf(tag);
+		tags.splice(index, 1);
+	}
+
 	return {
 		add: add,
-		getTags: getTags
+		getTags: getTags,
+		removeTag: removeTag
 	}
 }());
 
@@ -47,7 +53,8 @@ var TagUI = (function(){
 	var tag_list = "";
 
 	var tagMarkdown = function(tag){
-		var md = '<span class="tag">' + tag + '</span>';
+		var md = '<span class="tag label label-info" data-val="' + tag + 
+				'">' + tag + '<span class="close">&times;</span></span>';
 		return md;
 	}
 
@@ -61,9 +68,22 @@ var TagUI = (function(){
 		$(tag_list).html(md);
 	}
 
+	var removeTag = function(tag){
+		Tagger.removeTag(tag);
+	}
+
 	var setup = function(){
 		add_tag_box = "#id_tags";
 		tag_list = "#tag-list";
+
+		function setupRemove(){
+			$(".close").click(function(){
+				var tag = $(this).parent();
+				var val = tag.attr("data-val");
+				Tagger.removeTag(val);
+				$(tag).remove();
+			});
+		}
 
 		$(add_tag_box).keydown(function(event){
 			if(event.which == 188 || event.which == 13){
@@ -71,9 +91,11 @@ var TagUI = (function(){
 				$(this).val("");
 				Tagger.add(tag);
 				displayTags();
+				setupRemove();
 				event.preventDefault();
 			}
 		});
+
 	}
 
 	return {

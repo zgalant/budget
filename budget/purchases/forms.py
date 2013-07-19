@@ -48,7 +48,12 @@ class RegistrationForm(forms.Form):
 
 class AddPurchaseForm(forms.Form):
     description = forms.CharField()
-    price = forms.DecimalField(decimal_places=2)
+    price = forms.DecimalField(
+        decimal_places=2,
+        widget=forms.TextInput(
+            attrs={'placeholder': "$"}
+        )
+    )
     tags = forms.CharField(
         required=False,
         widget=forms.TextInput(
