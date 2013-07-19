@@ -1,24 +1,6 @@
-var PARENTS = {};
-
-PARENTS["lunch"] = ["food"];
-PARENTS["dinner"] = ["food"];
-PARENTS["groceries"] = ["food"];
-PARENTS["subway"] = ["sandwiches"];
-PARENTS["sandwiches"] = ["food"];
-
-PARENTS["coffee"] = ["drinks"];
-PARENTS["beer"] = ["alcohol"];
-PARENTS["alcohol"] = ["drinks"];
-
-PARENTS["bart"] = ["transportation"];
-PARENTS["caltrain"] = ["transportation"];
-PARENTS["gas"] = ["car"];
-PARENTS["muni"] = ["transportation"];
-PARENTS["car maintenance"] = ["car"];
-PARENTS["car"] = ["transportation"];
-
 var Tagger = (function(){
 	var tags = [];
+	var PARENTS = {};
 	var getTags = function(){
 		return tags;
 	}
@@ -41,10 +23,15 @@ var Tagger = (function(){
 		tags.splice(index, 1);
 	}
 
+	var setParents = function(parents){
+		PARENTS = JSON.parse(parents);
+	}
+
 	return {
 		add: add,
 		getTags: getTags,
-		removeTag: removeTag
+		removeTag: removeTag,
+		setParents: setParents
 	}
 }());
 
@@ -64,7 +51,6 @@ var TagUI = (function(){
 		for(var i=0; i < tags.length; i++){
 			md += tagMarkdown(tags[i]);
 		}
-		console.log(md);
 		$(tag_list).html(md);
 	}
 

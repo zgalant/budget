@@ -1,4 +1,14 @@
 {% extends "base.html" %}
+{% load jsonify %}
+
+{% block js %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		Tagger.setParents({{parent_tags|jsonify}});
+	});
+
+</script>
+{% endblock %}
 
 {% block content %}
 

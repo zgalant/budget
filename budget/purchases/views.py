@@ -114,6 +114,9 @@ def purchases(request):
 
     tags = sorted(tags, key=lambda tag: tag.total, reverse=True)
 
+    profile = UserProfile.objects.get(user=request.user)
+    parent_tags = profile.parent_tags
+
     return render_to_response("purchases.html", {
         'title': "Purchases",
         "user": request.user,
@@ -124,6 +127,7 @@ def purchases(request):
         "filters": tag_filters,
         "month": month,
         "year": year,
+        "parent_tags": parent_tags,
     },
         context_instance=RequestContext(request)
     )
