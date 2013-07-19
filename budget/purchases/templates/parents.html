@@ -6,11 +6,21 @@
 
 	<div class="span6">
 		<h3>Tag Family Tree</h3>
+		<p>
+			You can add parent/child tag relationships with tags, 
+			so whenever you add a tag to a purchase, you automatically add the parent tags.
+		</p>
+		<div>
+			Key<br/>
+			<span class="label">child</span>
+			<span class="label label-info">parent</span>
+		</div>
+		<hr>
 		{% for child, parents in parent_tags.items %}
 			<div>
-				{{child}} - 
+				<span class="label">{{child}}</span>
 				{% for parent in parents %}
-				{{parent}}, 
+				<span class="label label-info">{{parent}}</span>
 				{% endfor %}
 			</div>
 		{% endfor %}
