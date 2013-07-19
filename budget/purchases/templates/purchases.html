@@ -1,41 +1,49 @@
-<!doctype html>
-<head>
-	<script type="text/javascript" src="/static/js/jquery.min.js"></script>
-	<script type="text/javascript" src="/static/js/tags.js"></script>
-	<link rel="stylesheet" type="text/css" href="/static/css/style.css">
-</head>
-<h2>Add new purchase</h2>
-<form action="/purchases/add" method="post">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<div id="tag-list"></div>
-	<input type="submit" id="add-purchase-button" value="Submit" />
-</form>
+{% extends "base.html" %}
 
-<h3>This month: {{month}}/{{year}}</h3>
-<div>
-	<b>Filters: </b>
-	{% for tag in filters %}
-		{{tag.name}}{% if forloop.last %}{% else %}, {% endif %}
-	{% endfor %}
-</div>
-<br/>
-<div><b>Total:</b> ${{total}}</div>
-<br/>
-<div>
-	{% for tag in tags %}
-		{{tag.name}}: ${{tag.total}}<br/>
-	{% endfor %}
-</div>
-<br/>
-<h3>All Purchases</h3>
-{% for purchase in purchases %}
-	<div>
-		{{purchase.timestamp}} - ${{purchase.price}}: {{purchase.description}}
+{% block content %}
+
+<div class="row">
+
+	<div class="span6">
+		<h3>This month: {{month}}/{{year}}</h3>
 		<div>
-			{% for tag in purchase.tags.all %}
+			<b>Filters: </b>
+			{% for tag in filters %}
 				{{tag.name}}{% if forloop.last %}{% else %}, {% endif %}
 			{% endfor %}
 		</div>
+		<br/>
+		<div><b>Total:</b> ${{total}}</div>
+		<br/>
+		<div>
+			{% for tag in tags %}
+				{{tag.name}}: ${{tag.total}}<br/>
+			{% endfor %}
+		</div>
+		<br/>
+		<h3>All Purchases</h3>
+		{% for purchase in purchases %}
+			<div>
+				{{purchase.timestamp}} - ${{purchase.price}}: {{purchase.description}}
+				<div>
+					{% for tag in purchase.tags.all %}
+						{{tag.name}}{% if forloop.last %}{% else %}, {% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		{% endfor %}
 	</div>
-{% endfor %}
+
+	<div class="span6">
+		<h2>Add new purchase</h2>
+		<form action="/purchases/add" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<div id="tag-list"></div>
+			<input type="submit" id="add-purchase-button" value="Submit" />
+		</form>
+	</div>
+
+</div>
+
+{% endblock %}

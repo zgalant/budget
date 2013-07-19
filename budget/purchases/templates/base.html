@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    {% if title %}
+        <title>{{title}} | Budget</title>
+    {% else %}
+        <title>Budget</title>
+    {% endif %}
+    
+    <!-- jQuery, jQuery UI and jQuery Templates -->
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    
+    <!-- Bootstrap and some plugins -->
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+
+    <!-- Basic Bootstrap CSS Files -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+
+    <!-- Site specific CSS, JS -->
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <script type="text/javascript" src="/static/js/tags.js"></script>
+
+    {% block js %}
+    {% endblock %}
+</head>
+
+
+<body>
+    <div class="navbar navbar-fixed-top" id="top-nav">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="/">Budget</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        {% if user.is_authenticated %}
+                        <li>
+                            <a href="/purchases">Add Purchase</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <ul class="nav pull-right">
+                        {% if user.is_authenticated %}
+                        <li><a href="/purchases">{{user.first_name}} {{user.last_name}}</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                        {% else %}
+                        <li><a href="/register">Register</a></li>
+                        <li><a href="/login">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container" id="content">
+    {% block content %}
+    {% endblock %}
+    </div>
+    
+</body>
+
+</html>
