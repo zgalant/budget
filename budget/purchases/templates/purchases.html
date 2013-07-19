@@ -9,7 +9,7 @@
 	{% csrf_token %}
 	{{ form.as_p }}
 	<div id="tag-list"></div>
-	<input type="submit" value="Submit" />
+	<input type="submit" id="add-purchase-button" value="Submit" />
 </form>
 
 <h3>This month: {{month}}/{{year}}</h3>

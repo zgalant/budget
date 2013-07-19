@@ -2,10 +2,13 @@ var PARENTS = {};
 
 PARENTS["lunch"] = ["food"];
 PARENTS["dinner"] = ["food"];
-PARENTS["coffee"] = ["food", "drinks"];
 PARENTS["groceries"] = ["food"];
 PARENTS["subway"] = ["sandwiches"];
 PARENTS["sandwiches"] = ["food"];
+
+PARENTS["coffee"] = ["drinks"];
+PARENTS["beer"] = ["alcohol"];
+PARENTS["alcohol"] = ["drinks"];
 
 PARENTS["bart"] = ["transportation"];
 PARENTS["caltrain"] = ["transportation"];
@@ -80,4 +83,9 @@ var TagUI = (function(){
 
 $(document).ready(function(){
 	TagUI.setup();
+
+	$("#add-purchase-button").click(function(){
+		$form = $("form");
+		$("#id_tags").val(Tagger.getTags().join(","));
+	});
 });
