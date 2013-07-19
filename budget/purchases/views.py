@@ -9,11 +9,15 @@ from django.contrib.auth.decorators import login_required
 import datetime
 
 from django.contrib.auth.models import User
+from purchases.models import UserProfile
+
 from purchases.models import Purchase
 from purchases.models import Tag
 
 from purchases.forms import RegistrationForm
 from purchases.forms import AddPurchaseForm
+
+import json
 
 
 def index(request):
@@ -147,7 +151,10 @@ def create_basic_user(form, request):
 
     user.save()
 
-    return user, password
+    profile = UserProfile(user=user)
+    profile.save()
+
+    return user, password, profile
 
 
 def register(request):
@@ -163,7 +170,7 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user, password = create_basic_user(form, request)
+            user, password, profile = create_basic_user(form, request)
             return authenticate(request, user.email, password)
     else:
         # setup the redirect url if user attempted to access a page

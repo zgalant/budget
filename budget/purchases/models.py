@@ -2,7 +2,14 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+
 import datetime
+from jsonfield import JSONField
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    parent_tags = JSONField()
 
 
 class Tag(models.Model):
