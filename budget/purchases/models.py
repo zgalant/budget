@@ -16,14 +16,27 @@ class UserProfile(models.Model):
         parents = json.loads(self.parent_tags)
         return parents
 
+    def is_ancestor(self, tag, ancestor):
+        families = self.get_parent_tags()
+        if tag in families:
+            tag_parents = families[tag]
+            if ancestor in tag_parents:
+                return True
+            for parent in tag_parents:
+                if self.is_ancestor(parent, ancestor):
+                    return True
+        return False
+
     def add_parent_tag(self, tag, parent):
-        # TODO: make sure we don't create a loop
-        parents = self.get_parent_tags()
-        if tag in parents:
-            parents[tag].append(parent)
+        families = self.get_parent_tags()
+        if self.is_ancestor(parent, tag):
+            # This means that we'd create a loop
+            return
+        if tag in families:
+            families[tag].append(parent)
         else:
-            parents[tag] = [parent]
-        self.parent_tags = json.dumps(parents)
+            families[tag] = [parent]
+        self.parent_tags = json.dumps(families)
         self.save()
 
 
