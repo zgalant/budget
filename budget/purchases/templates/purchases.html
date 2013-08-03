@@ -27,7 +27,7 @@
 		<br/>
 		<div>
 			{% for tag in tags %}
-				{{tag.name}}: ${{tag.total}}<br/>
+				<span class="label">{{tag.name}}</span> ${{tag.total}}<br/>
 			{% endfor %}
 		</div>
 		<br/>
@@ -37,9 +37,10 @@
 				{{purchase.timestamp}} - ${{purchase.price}}: {{purchase.description}}
 				<div>
 					{% for tag in purchase.tags.all %}
-						{{tag.name}}{% if forloop.last %}{% else %}, {% endif %}
+						<span class="label">{{tag.name}}</span>
 					{% endfor %}
 				</div>
+				<br/>
 			</div>
 		{% endfor %}
 	</div>
