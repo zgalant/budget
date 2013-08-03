@@ -21,7 +21,7 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('description', self.gf('django.db.models.fields.CharField')(max_length=1000)),
             ('price', self.gf('django.db.models.fields.FloatField')()),
-            ('timestamp', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
+            ('timestamp', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal(u'purchases', ['Purchase'])
 

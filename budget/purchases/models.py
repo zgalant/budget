@@ -60,7 +60,7 @@ class Purchase(models.Model):
     user = models.ForeignKey(User)
     description = models.CharField(max_length=1000)
     price = models.FloatField()
-    timestamp = models.DateField(auto_now=True)
+    timestamp = models.DateField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, related_name='purchases')
 
     @staticmethod
