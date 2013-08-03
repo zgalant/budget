@@ -81,6 +81,19 @@ def add(request):
     return redirect("/purchases")
 
 
+def delete(request, id):
+    try:
+        purchase = Purchase.objects.get(id=id)
+        purchase.delete()
+    except Exception:
+        pass
+    try:
+        path = request.GET['path']
+    except:
+        path = "/purchases"
+    return redirect(path)
+
+
 def purchases(request):
     try:
         tag_filters = request.GET['tags']
@@ -128,6 +141,7 @@ def purchases(request):
         "month": month,
         "year": year,
         "parent_tags": parent_tags,
+        "path": request.path,
     },
         context_instance=RequestContext(request)
     )
