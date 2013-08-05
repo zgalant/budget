@@ -116,7 +116,9 @@ def purchases(request):
 
     form = AddPurchaseForm()
 
-    purchases = Purchase.purchases(request.user, month=month, year=year)
+    purchases = Purchase.purchases(
+        request.user, month=month, year=year
+    ).order_by('-timestamp')
 
     for tag_filter in tag_filters:
         purchases = purchases.filter(tags__in=[tag_filter])
