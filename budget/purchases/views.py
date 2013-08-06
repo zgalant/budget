@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 import datetime
 
 from django.contrib.auth.models import User
@@ -84,7 +85,10 @@ def add(request):
 def delete(request, id):
     try:
         purchase = Purchase.objects.get(id=id)
-        purchase.delete()
+        if purchase.user == request.user:
+            purchase.delete()
+        else:
+            raise Http404
     except Exception:
         pass
     try:
