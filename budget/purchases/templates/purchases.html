@@ -35,6 +35,7 @@
 		{% for purchase in purchases %}
 			<div>
 				{{purchase.timestamp}} - ${{purchase.price}}: {{purchase.description}} <a href="/purchases/delete/{{purchase.id}}?path={{path}}">&times;</a>
+				&nbsp;<a href="/purchases/edit/{{purchase.id}}">edit</a>
 				<div>
 					{% for tag in purchase.tags.all %}
 						<span class="label">{{tag.name}}</span>

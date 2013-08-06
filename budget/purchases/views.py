@@ -18,6 +18,7 @@ from purchases.models import Tag
 from purchases.forms import RegistrationForm
 from purchases.forms import AddPurchaseForm
 from purchases.forms import AddParentTagForm
+from purchases.forms import EditPurchaseForm
 
 
 def index(request):
@@ -96,6 +97,50 @@ def delete(request, id):
     except:
         path = "/purchases"
     return redirect(path)
+
+
+def edit(request, id):
+    try:
+        purchase = Purchase.objects.get(id=id)
+        if purchase.user != request.user:
+            raise Http404
+    except Exception:
+        raise Http404
+
+    profile = UserProfile.objects.get(user=request.user)
+    parent_tags = profile.parent_tags
+
+    if request.method == "GET":
+        form = EditPurchaseForm(initial={
+            "description": purchase.description,
+            "price": purchase.price,
+            "month": purchase.timestamp.month,
+            "day": purchase.timestamp.day
+        })
+    else:
+        form = EditPurchaseForm(request.POST)
+        if form.is_valid():
+            description = form.cleaned_data['description']
+            price = form.cleaned_data['price']
+            month = form.cleaned_data['month']
+            day = form.cleaned_data['day']
+            purchase.description = description
+            purchase.price = price
+            purchase.timestamp = purchase.timestamp.replace(
+                month=month,
+                day=day
+            )
+            purchase.save()
+
+    return render_to_response("edit_purchase.html", {
+        'title': "Purchases",
+        "user": request.user,
+        "form": form,
+        "purchase": purchase,
+        "parent_tags": parent_tags,
+    },
+        context_instance=RequestContext(request)
+    )
 
 
 def purchases(request):

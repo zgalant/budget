@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load jsonify %}
+
+{% block js %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		Tagger.setParents({{parent_tags|jsonify}});
+	});
+
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+	<div class="span6 offset3">
+		<h2>Edit purchase</h2>
+		<form action="/purchases/edit/{{purchase.id}}" method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<div id="tag-list"></div>
+			<input type="submit" id="edit-purchase-button" value="Save" />
+		</form>
+	</div>
+
+</div>
+
+{% endblock %}

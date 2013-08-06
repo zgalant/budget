@@ -62,6 +62,24 @@ class AddPurchaseForm(forms.Form):
     )
 
 
+class EditPurchaseForm(forms.Form):
+    description = forms.CharField()
+    price = forms.DecimalField(
+        decimal_places=2,
+        widget=forms.TextInput(
+            attrs={'placeholder': "$"}
+        )
+    )
+    tags = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': "Hit Enter or , to save a tag"}
+        )
+    )
+    month = forms.IntegerField()
+    day = forms.IntegerField()
+
+
 class AddParentTagForm(forms.Form):
     tag = forms.CharField(
         widget=forms.TextInput(
