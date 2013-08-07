@@ -99,6 +99,25 @@ def delete(request, id):
     return redirect(path)
 
 
+def sync_tags(request):
+    profile = UserProfile.objects.get(user=request.user)
+    parent_tags = profile.get_parent_tags()
+
+    for tag in parent_tags:
+        tag_object = Tag.objects.get(name=tag)
+        purchases = Purchase.objects.filter(
+            user=request.user,
+            tags__in=[tag_object]
+        )
+        for purchase in purchases:
+            for parent in parent_tags[tag]:
+                if not parent in purchase.tags.all():
+                    parent_tag = Tag.objects.get(name=parent)
+                    purchase.tags.add(parent_tag)
+
+    return redirect("/parents")
+
+
 def edit(request, id):
     try:
         purchase = Purchase.objects.get(id=id)
