@@ -75,6 +75,17 @@ def add(request):
                 user=request.user
             )
             purchase.save()
+
+            try:
+                month = form.cleaned_data['month']
+                day = form.cleaned_data['day']
+                purchase.timestamp = purchase.timestamp.replace(
+                    month=month,
+                    day=day
+                )
+                purchase.save()
+            except Exception:
+                pass
             for tag in tags:
                 tag = tag.strip()
                 t, created = Tag.objects.get_or_create(name=tag)
@@ -151,12 +162,22 @@ def edit(request, id):
             )
             purchase.save()
 
+            tagstring = form.cleaned_data['tags']
+            tags = tagstring.split(",")
+            purchase.tags.clear()
+            for tag in tags:
+                tag = tag.strip()
+                t, created = Tag.objects.get_or_create(name=tag)
+                t.save()
+                purchase.tags.add(t)
+
     return render_to_response("edit_purchase.html", {
         'title': "Purchases",
         "user": request.user,
         "form": form,
         "purchase": purchase,
         "parent_tags": parent_tags,
+        "purchase_tags": [tag.name for tag in purchase.tags.all()],
     },
         context_instance=RequestContext(request)
     )

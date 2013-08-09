@@ -5,6 +5,7 @@ var Tagger = (function(){
 		return tags;
 	}
 	var add = function(tag){
+		console.log(tag);
 		if(tags.indexOf(tag) == -1){
 			tags.push(tag);
 		}
@@ -58,26 +59,30 @@ var TagUI = (function(){
 		Tagger.removeTag(tag);
 	}
 
+	function setupRemove(){
+		$(".close").click(function(){
+			var tag = $(this).parent();
+			var val = tag.attr("data-val");
+			Tagger.removeTag(val);
+			$(tag).remove();
+		});
+	}
+
+	var addTag = function(tag) {
+		Tagger.add(tag);
+		displayTags();
+		setupRemove();
+	}
+
 	var setup = function(){
 		add_tag_box = "#id_tags";
 		tag_list = "#tag-list";
-
-		function setupRemove(){
-			$(".close").click(function(){
-				var tag = $(this).parent();
-				var val = tag.attr("data-val");
-				Tagger.removeTag(val);
-				$(tag).remove();
-			});
-		}
 
 		$(add_tag_box).keydown(function(event){
 			if(event.which == 188 || event.which == 13){
 				var tag = $(this).val();
 				$(this).val("");
-				Tagger.add(tag);
-				displayTags();
-				setupRemove();
+				addTag(tag);
 				event.preventDefault();
 			}
 		});
@@ -85,7 +90,8 @@ var TagUI = (function(){
 	}
 
 	return {
-		setup: setup
+		setup: setup,
+		addTag: addTag
 	}
 }());
 

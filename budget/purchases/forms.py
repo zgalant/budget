@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+import datetime
 
 
 class RegistrationForm(forms.Form):
@@ -58,6 +59,18 @@ class AddPurchaseForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={'placeholder': "Hit Enter or , to save a tag"}
+        )
+    )
+    month = forms.IntegerField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': "optional: default is today"}
+        )
+    )
+    day = forms.IntegerField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': "optional: default is today"}
         )
     )
 

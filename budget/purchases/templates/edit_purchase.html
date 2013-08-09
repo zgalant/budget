@@ -5,6 +5,10 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		Tagger.setParents({{parent_tags|jsonify}});
+
+		{% for tag in purchase_tags %}
+			TagUI.addTag("{{tag}}");
+		{% endfor %}
 	});
 
 </script>
@@ -20,7 +24,7 @@
 			{% csrf_token %}
 			{{ form.as_p }}
 			<div id="tag-list"></div>
-			<input type="submit" id="edit-purchase-button" value="Save" />
+			<input type="submit" id="add-purchase-button" value="Save" />
 		</form>
 	</div>
 
