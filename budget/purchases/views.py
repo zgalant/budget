@@ -204,18 +204,25 @@ def purchases(request):
         user=request.user,
     )
 
-    if 'start' in request.GET and 'end' in request.GET:
-        start = request.GET['start']
-        start = get_date(start)
-
+    try:
         end = request.GET['end']
 
         ## Add one day so it is inclusive, since these
         ## are datetimes.
         end = get_date(end) + timedelta(days=1)
-    else:
+    except Exception:
         end = date.today() + timedelta(days=1)
-        start = end - timedelta(days=1)
+
+    try:
+        start = request.GET['start']
+        start = get_date(start)
+    except Exception:
+        this_month = end - timedelta(days=1)
+        start = datetime.datetime(
+            year=this_month.year,
+            month=this_month.month,
+            day=1
+        )
 
     purchases = purchases.filter(timestamp__range=(start, end))
 
