@@ -25,42 +25,15 @@ from purchases.forms import EditPurchaseForm
 
 def index(request):
     if request.user.is_authenticated():
-        if request.method == "POST":
-            form = AddPurchaseForm(request.POST)
-            if form.is_valid():
-                description = form.cleaned_data['description']
-                price = form.cleaned_data['price']
-                tagstring = form.cleaned_data['tags']
-                tags = tagstring.split(",")
-                purchase = Purchase(
-                    description=description,
-                    price=price,
-                    user=request.user
-                )
-                purchase.save()
-                for tag in tags:
-                    tag = tag.strip()
-                    t, created = Tag.objects.get_or_create(name=tag)
-                    t.save()
-                    purchase.tags.add(t)
-                return redirect("/")
-        else:
-            form = AddPurchaseForm()
-
-        return render_to_response("index.html", {
-            'title': "Purchases",
-            "user": request.user,
-            "form": form,
-        },
-            context_instance=RequestContext(request)
-        )
+        return redirect("/purchases")
     else:
-        return render_to_response("index.html", {
-            'title': "Purchases",
-            "user": request.user,
-        },
-            context_instance=RequestContext(request)
-        )
+        return redirect("/login")
+        # return render_to_response("index.html", {
+        #     'title': "Purchases",
+        #     "user": request.user,
+        # },
+        #     context_instance=RequestContext(request)
+        # )
 
 
 def add(request):
