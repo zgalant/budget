@@ -8,6 +8,8 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 import datetime
+from datetime import date
+from datetime import timedelta
 
 from django.contrib.auth.models import User
 from purchases.models import UserProfile
@@ -184,6 +186,13 @@ def edit(request, id):
 
 
 def purchases(request):
+
+    def get_date(s):
+        """Get a date from the string. Return date"""
+        t = [int(x) for x in s.split('/')]
+        return date(t[2], t[0], t[1])
+
+    start = end = None
     try:
         tag_filters = request.GET['tags']
         tag_filters = tag_filters.split(",")
@@ -191,26 +200,34 @@ def purchases(request):
     except Exception:
         tag_filters = []
 
-    now = datetime.datetime.now()
-    try:
-        month = request.GET['month']
-        month = int(month)
-    except Exception:
-        month = now.month
-    try:
-        year = request.GET['year']
-        year = int(year)
-    except Exception:
-        year = now.year
+    purchases = Purchase.objects.filter(
+        user=request.user,
+    )
+
+    if 'start' in request.GET and 'end' in request.GET:
+        start = request.GET['start']
+        start = get_date(start)
+
+        end = request.GET['end']
+
+        ## Add one day so it is inclusive, since these
+        ## are datetimes.
+        end = get_date(end) + timedelta(days=1)
+    else:
+        end = date.today() + timedelta(days=1)
+        start = end - timedelta(days=1)
+
+    purchases = purchases.filter(timestamp__range=(start, end))
+
+    ## Fix the end so it shows up correctly in the UI
+    end = end - timedelta(days=1)
 
     form = AddPurchaseForm()
 
-    purchases = Purchase.purchases(
-        request.user, month=month, year=year
-    ).order_by('-timestamp')
-
     for tag_filter in tag_filters:
         purchases = purchases.filter(tags__in=[tag_filter])
+
+    purchases = purchases.order_by('-timestamp')
 
     tags = Tag.tags_for_purchases(purchases)
     for tag in tags:
@@ -229,8 +246,8 @@ def purchases(request):
         "total": Purchase.total(purchases),
         "tags": tags,
         "filters": tag_filters,
-        "month": month,
-        "year": year,
+        "start": start,
+        "end": end,
         "parent_tags": parent_tags,
         "path": request.path,
     },
