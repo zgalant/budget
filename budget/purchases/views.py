@@ -179,10 +179,7 @@ def purchases(request):
 
     try:
         end = request.GET['end']
-
-        ## Add one day so it is inclusive, since these
-        ## are datetimes.
-        end = get_date(end) + timedelta(days=1)
+        end = get_date(end)
     except Exception:
         end = date.today() + timedelta(days=1)
 
