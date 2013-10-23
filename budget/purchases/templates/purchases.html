@@ -27,7 +27,12 @@
 		<br/>
 		<div>
 			{% for tag in tags %}
-				<span class="label">{{tag.name}}</span> ${{tag.total}}<br/>
+				<a
+				{% if filters|length == 0 %}
+				href="{{path}}&tags={{tag.name}}"
+				{% endif %}
+				>
+				<span class="label">{{tag.name}}</span></a> ${{tag.total}}<br/>
 			{% endfor %}
 		</div>
 		<br/>

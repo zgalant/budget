@@ -226,7 +226,7 @@ def purchases(request):
         "start": start,
         "end": end,
         "parent_tags": parent_tags,
-        "path": request.path,
+        "path": "%s?%s" % (request.path, request.META['QUERY_STRING']),
     },
         context_instance=RequestContext(request)
     )
