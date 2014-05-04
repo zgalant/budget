@@ -196,9 +196,6 @@ def purchases(request):
 
     purchases = purchases.filter(timestamp__range=(start, end))
 
-    ## Fix the end so it shows up correctly in the UI
-    end = end - timedelta(days=1)
-
     form = AddPurchaseForm()
 
     for tag_filter in tag_filters:
