@@ -22,7 +22,7 @@ def run(*script_args):
     f = open(filename)
     lines = f.readlines()
     f.close()
-    lines = lines[3:]
+    lines = lines[1:]
     for line in lines:
         purchase = line.split(",")
         dt = get_date(purchase[0])
