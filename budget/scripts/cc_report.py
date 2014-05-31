@@ -26,7 +26,7 @@ def run(*script_args):
     for line in lines:
         purchase = line.split(",")
         dt = get_date(purchase[0])
-        description = purchase[1]
+        description = purchase[1].replace("\"", "")
         price = float(purchase[2][1:])
         tags = purchase[3:]
         p = Purchase(
