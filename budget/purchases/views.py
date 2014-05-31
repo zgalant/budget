@@ -201,7 +201,8 @@ def purchases(request):
     for tag_filter in tag_filters:
         purchases = purchases.filter(tags__in=[tag_filter])
 
-    purchases = purchases.order_by('-timestamp')
+    order_by = request.GET.get('order_by', '-timestamp')
+    purchases = purchases.order_by(order_by)
 
     tags = Tag.tags_for_purchases(purchases)
     for tag in tags:
