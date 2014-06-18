@@ -3,8 +3,105 @@
 
 {% block js %}
 <script type="text/javascript">
+
+	// converts date to Django readable format
+    function convertDate(date) {
+    	return date;
+        dateArr = date.split('/');
+        newDateArr = [];
+        newDateArr[0] = dateArr[2];
+        newDateArr[1] = dateArr[0];
+        newDateArr[2] = dateArr[1];
+        return newDateArr.join('-').replace(' ', '');
+    }
+
 	$(document).ready(function(){
 		Tagger.setParents({{parent_tags|jsonify}});
+
+		// setup daterange picker
+        $('#reportrange').daterangepicker(
+         {
+            ranges: {
+               'Last 7 Days': [moment().subtract('days', 6), new Date()],
+
+               'Last 30 Days': [moment().subtract('days', 29), new Date()],
+
+               'This Month': [moment().startOf('month'),
+                              moment().endOf('month')],
+
+               'Last Month': [moment().subtract('month', 1).startOf('month'),
+                              moment().subtract('month', 1).endOf('month')],
+
+				'2 Months ago': [moment().subtract('month', 2).startOf('month'),
+                              moment().subtract('month', 2).endOf('month')],
+
+                'Last 6 Months': [moment().subtract('month', 5).startOf('month'),
+                              moment().endOf('month')],
+
+               'Q1': [moment().startOf('year'),
+                      moment().month(2).endOf('month')],
+
+               'Q2': [moment().month(3).startOf('month'),
+                      moment().month(5).endOf('month')],
+
+               'Calendar Year': [moment().startOf('year'), new Date()],
+
+               'Past Year': [moment().subtract('year', 1), new Date()],
+
+               'All Time': [moment().year(2013)
+                                    .month(5)
+                                    .startOf('month'),
+                                    new Date()]
+            },
+            opens: 'left',
+            format: 'MM/DD/YYYY',
+            separator: ' to ',
+            startDate: moment().year(2013).month(5).startOf('month'),
+            endDate: moment(),
+            minDate: '01/01/2012',
+            maxDate: '12/31/2018',
+            locale: {
+                applyLabel: 'Submit',
+                fromLabel: 'From',
+                toLabel: 'To',
+                customRangeLabel: 'Custom Range',
+                daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                monthNames: ['January', 'February', 'March', 'April',
+                             'May', 'June', 'July', 'August',
+                             'September', 'October', 'November', 'December'],
+                firstDay: 1
+            },
+            showWeekNumbers: true,
+            buttonClasses: ['btn-danger'],
+            dateLimit: false
+         },
+         function(start, end) {
+            $('#reportrange span').html(
+                start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY')
+            );
+
+            var startDate = start.format('L');
+            var endDate = end.format('L');
+         }
+        );
+
+        // Set the initial state of the picker label
+        $('#reportrange span').html(
+            moment().year(2013).month(5).startOf('month').format('MM/DD/YYYY') +
+            ' - ' +
+            moment().format('MM/DD/YYYY')
+        );
+
+        $("#submit-date-filter").on('click', function() {
+        	// array of start and end dates
+            dates = $('#reportrange span').text().split('-');
+
+            // date picker dates converted to Django-readable format
+            var startDate = convertDate(dates[0]);
+            var endDate = convertDate(dates[1]);
+
+            window.location = "/purchases?start=" + startDate + "&end=" + endDate;
+        });
 	});
 
 </script>
@@ -16,6 +113,15 @@
 
 	<div class="span12">
 		<h3>Start: {{start}} -- End: {{end}}</h3>
+		<div id="reportrange" class="pull-left" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+            <i class="icon-calendar icon-large"></i>
+            <span></span> <b class="caret" style="margin-top: 8px"></b>
+        </div>
+        <button id="submit-date-filter" class="btn">Filter</button>
+        <br>
+        <br>
+        <br>
+        <br>
 		<div>
 			<b>Filters: </b>
 			{% for tag in filters %}
