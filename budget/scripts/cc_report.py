@@ -34,8 +34,10 @@ def run(*script_args):
             price=price,
             user=user
         )
+        p.save()
         p.timestamp = dt
         p.save()
+        print dt
         print price
         for tag in tags:
             tag = tag.replace("\r\n", "").replace("\"", "")
