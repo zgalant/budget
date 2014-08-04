@@ -56,12 +56,11 @@ def run(*script_args):
         )
         print p.description, p.price, dt
         if should_save_purchase():
-            # p.save()
-            # p.timestamp = dt
-            # p.save()
+            p.save()
+            p.timestamp = dt
+            p.save()
             tags = get_entered_tags(user)
-            print tags
-            # for tag in tags:
-            #     t, created = Tag.objects.get_or_create(name=tag)
-            #     t.save()
-            #     p.tags.add(t)
+            for tag in tags:
+                t, created = Tag.objects.get_or_create(name=tag)
+                t.save()
+                p.tags.add(t)
