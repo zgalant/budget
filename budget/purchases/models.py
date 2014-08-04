@@ -27,6 +27,14 @@ class UserProfile(models.Model):
                     return True
         return False
 
+    def get_parents(self, tag):
+        """Return list of strings that are parents of the given tag string."""
+        families = self.get_parent_tags()
+        try:
+            return families[tag]
+        except Exception:
+            return []
+
     def add_parent_tag(self, tag, parent):
         families = self.get_parent_tags()
         if self.is_ancestor(parent, tag):
