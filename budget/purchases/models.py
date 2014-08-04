@@ -31,7 +31,10 @@ class UserProfile(models.Model):
         """Return list of strings that are parents of the given tag string."""
         families = self.get_parent_tags()
         try:
-            return families[tag]
+            parents = families[tag]
+            for parent in parents:
+                parents.extend(self.get_parents(parent))
+            return parents
         except Exception:
             return []
 
