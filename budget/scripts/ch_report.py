@@ -30,6 +30,31 @@ def get_entered_tags(user):
     return tags
 
 
+def get_automatic_tags(p, dt):
+    """Return whether I've set up automatic tagging.
+
+    Also save the purchase and add the automatic tags.
+
+    """
+    tags = []
+    if "philz" in p.description.lower():
+        tags = ["philz", "coffee", "drinks"]
+    elif "rainbow" in p.description.lower():
+        tags = ["groceries", "food"]
+
+    if len(tags) > 0:
+        p.save()
+        p.timestamp = dt
+        p.save()
+        for tag in tags:
+            t, created = Tag.objects.get_or_create(name=tag)
+            t.save()
+            p.tags.add(t)
+        return True
+    else:
+        return False
+
+
 def should_save_purchase():
     """Ask whether we should save the purchase. Return boolean."""
     print "Save purchase? (y/n)"
@@ -55,7 +80,8 @@ def run(*script_args):
             user=user
         )
         print p.description, p.price, dt
-        if should_save_purchase():
+        automatic = get_automatic_tags(p, dt)
+        if not automatic and should_save_purchase():
             p.save()
             p.timestamp = dt
             p.save()
