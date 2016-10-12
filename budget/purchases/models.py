@@ -13,8 +13,11 @@ class UserProfile(models.Model):
     parent_tags = JSONField()
 
     def get_parent_tags(self):
-        parents = json.loads(self.parent_tags)
-        return parents
+        try:
+            parents = json.loads(self.parent_tags)
+            return parents
+        except:
+            return {}
 
     def is_ancestor(self, tag, ancestor):
         families = self.get_parent_tags()
